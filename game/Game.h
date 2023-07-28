@@ -10,7 +10,7 @@
 class Game
 {
 public:
-	void PollEvents();
+	void HandleEvents(SDL_Event* event);
 	void Update();
 	void Render();
 	void Start();
@@ -18,12 +18,14 @@ public:
 	bool IsRunning();
 	bool AddObject(GameObject object);
 	bool RemoveObject(GameObject object);
+	SDL_Renderer* GetRenderer();
+	~Game();
 private:
-	SDL_Window *window;
-	SDL_Renderer* renderer;
-	bool isRunning;
+	SDL_Window *window = NULL;
+	SDL_Renderer* renderer = NULL;
+	bool isRunning = false;
+	bool isInitialized = false;
 	std::vector<GameObject> objectList;
 	void InitializeSDL();
-};
 
-// TODO: Reference additional headers your program requires here.
+};

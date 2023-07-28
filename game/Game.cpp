@@ -1,14 +1,15 @@
 ﻿#include "Game.h"
 
-void Game::PollEvents()
+void Game::HandleEvents(SDL_Event* event)
 {
-	SDL_Event event;
-	if (SDL_PollEvent(&event))
+	if (event->type == SDL_QUIT)
 	{
-		for (GameObject object : objectList)
-		{
-			object.PollEvent(&event);
-		}
+		isRunning = false;
+		return;
+	}
+	for (GameObject object : objectList)
+	{
+		object.HandleEvent(event);
 	}
 }
 
@@ -22,6 +23,9 @@ void Game::Update()
 
 void Game::Render()
 {
+	SDL_RenderClear(renderer);
+	static int c = 0;
+	SDL_SetRenderDrawColor(renderer, c, c, c++, SDL_ALPHA_OPAQUE);
 	for (GameObject object : objectList)
 	{
 		if (object.IsVisible())
@@ -29,11 +33,17 @@ void Game::Render()
 			object.Render(renderer);
 		}
 	}
+	SDL_RenderPresent(renderer);
+	SDL_ShowWindow(window);
 }
 
 void Game::Start()
 {
-	InitializeSDL();
+	if (!isInitialized)
+	{
+		InitializeSDL();
+		isInitialized = true;
+	}
 	isRunning = true;
 }
 
@@ -73,6 +83,19 @@ bool Game::RemoveObject(GameObject object)
 	return false;
 }
 
+SDL_Renderer* Game::GetRenderer()
+{
+	return renderer;
+}
+
+Game::~Game()
+{
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	IMG_Quit();
+	SDL_Quit();
+}
+
 void Game::InitializeSDL()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -85,7 +108,7 @@ void Game::InitializeSDL()
 		std::cout << "ERROR: " << IMG_GetError() << " at line " << __LINE__ << std::endl;
 		exit(1);
 	}
-	window = SDL_CreateWindow("game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 680, 480, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 680, 480, 0);
 	if (window == NULL)
 	{
 		std::cout << "ERROR: " << SDL_GetError() << " at line " << __LINE__ << std::endl;
@@ -97,5 +120,6 @@ void Game::InitializeSDL()
 		std::cout << "ERROR: " << SDL_GetError() << " at line " << __LINE__ << std::endl;
 		exit(1);
 	}
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 
