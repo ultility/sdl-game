@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_executable (game "Game.cpp" "Game.h" "Texture.cpp" "Texture.h"  "main.cpp" "main.h" "IUpdateable.h")
+add_executable (game "Game.cpp" "Game.h" "Texture.cpp" "Texture.h"  "main.cpp" "main.h" "GameObject.h"  "Player.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET game PROPERTY CXX_STANDARD 20)

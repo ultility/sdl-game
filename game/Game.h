@@ -5,8 +5,7 @@
 
 #include <vector>
 #include "Texture.h"
-#include "IRenderable.h"
-#include "IUpdateable.h"
+#include "GameObject.h"
 
 class Game
 {
@@ -17,12 +16,14 @@ public:
 	void Start();
 	void Restart();
 	bool IsRunning();
+	bool AddObject(GameObject object);
+	bool RemoveObject(GameObject object);
 private:
 	SDL_Window *window;
 	SDL_Renderer* renderer;
 	bool isRunning;
-	std::vector<IUpdateable> updateList;
-	std::vector<IRenderable> shownObjects;
+	std::vector<GameObject> objectList;
+	void InitializeSDL();
 };
 
 // TODO: Reference additional headers your program requires here.
